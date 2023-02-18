@@ -16,7 +16,7 @@ typedef struct BitPattern {
     uint32_t mnt3 : 32;
     uint16_t null1 : 16;
     uint8_t exp : 8;
-    uint16_t null2 : 16;
+    uint16_t null2 : 7;
     uint32_t sgn : 1;
 } BitPattern;
 

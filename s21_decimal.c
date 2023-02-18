@@ -2,10 +2,9 @@
 
 int s21_is_less(s21_decimal val1, s21_decimal val2) {
     int res = 0;
+
     s21_zero_exp(&val1);
     s21_zero_exp(&val2);
-    // printf("%d\n", val2.pat.exp);
-    printf("%d\n", val2.pat.sgn);
 
     if (val1.pat.sgn && !val2.pat.sgn)
         res = 1;
