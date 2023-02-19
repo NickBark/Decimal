@@ -29,5 +29,7 @@ void s21_zero_exp(s21_decimal *val);
 
 //Операторы сравнение
 int s21_is_less(s21_decimal val1, s21_decimal val2);
+int s21_is_less_or_equal(s21_decimal val1, s21_decimal val2);
+int s21_is_greater(s21_decimal val1, s21_decimal val2);
 
 #endif  // S21_DECIMAL_H
