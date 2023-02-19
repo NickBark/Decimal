@@ -18,9 +18,9 @@ $(LIB): s21_decimal.o
 debug: $(LIB) main.o
 	$(CC) $(CFLAGS) main.o $(LIB) -o debug
 
-# test: $(LIB) test.o
-# 	$(CC) $(CFLAGS) test.o $(LIB) $(TEST_FLAGS) -lm -o test
-# 	./test
+test: $(LIB) test.o
+	$(CC) $(CFLAGS) test.o $(LIB) $(TEST_FLAGS) -o test
+	./test
 
 # add_coverage_flag: 
 # 	$(eval CFLAGS += --coverage)
