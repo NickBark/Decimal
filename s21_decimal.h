@@ -1,13 +1,15 @@
 #ifndef S21_DECIMAL_H
 #define S21_DECIMAL_H
-//---
+
+//--- удалить позже
 #include <stdio.h>
 //---
-#include <stdint.h>  // для максимальных и минимальных значений и для типов (uint)
+
+#include <stdint.h>  // для максимальных, минимальных значений и для типов (uint)
 #include <stdlib.h>
 
-// typedef struct s21_decimal {
-//     int bits;
+// typedef struct s21_decimal { // промежуточный этап, нуежен по тз или нет ?
+//     int bits[4];
 // } s21_decimal;
 
 typedef struct BitPattern {
@@ -31,5 +33,6 @@ void s21_zero_exp(s21_decimal *val);
 int s21_is_less(s21_decimal val1, s21_decimal val2);
 int s21_is_less_or_equal(s21_decimal val1, s21_decimal val2);
 int s21_is_greater(s21_decimal val1, s21_decimal val2);
+int s21_is_greater_or_equal(s21_decimal val1, s21_decimal val2);
 
 #endif  // S21_DECIMAL_H
