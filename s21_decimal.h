@@ -3,7 +3,7 @@
 //---
 #include <stdio.h>
 //---
-#include <stdint.h>
+#include <stdint.h>  // для максимальных и минимальных значений и для типов (uint)
 #include <stdlib.h>
 
 // typedef struct s21_decimal {
