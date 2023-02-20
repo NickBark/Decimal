@@ -8,6 +8,30 @@ START_TEST(is_less) {
     s21_decimal ppp2 = {{11, 11, 10, 0b00110000000000011000000000000000}};
 
     ck_assert_int_eq(s21_is_less(ppp1, ppp2), 1);
+
+    ppp1.bits[0] = 12;
+    ppp1.bits[1] = 11;
+    ppp1.bits[2] = 10;
+    ppp1.bits[3] = 0b10110000000000011000000000000000;
+
+    ppp2.bits[0] = 11;
+    ppp2.bits[1] = 11;
+    ppp2.bits[2] = 10;
+    ppp2.bits[3] = 0b10110000000000011000000000000000;
+
+    ck_assert_int_eq(s21_is_less(ppp1, ppp2), 1);
+
+    ppp1.bits[0] = 12;
+    ppp1.bits[1] = 11;
+    ppp1.bits[2] = 10;
+    ppp1.bits[3] = 0b00110000100000010000000000000000;
+
+    ppp2.bits[0] = 11;
+    ppp2.bits[1] = 11;
+    ppp2.bits[2] = 10;
+    ppp2.bits[3] = 0b00110000000000011000000000000000;
+
+    ck_assert_int_eq(s21_is_less(ppp1, ppp2), 1);
 }
 END_TEST
 
