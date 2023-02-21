@@ -289,7 +289,9 @@ void mntAdd(s21_decimal val1, s21_decimal val2, s21_decimal* res) {
     for (int i = 0; i < 96; i++) resetBit(res->bits, i);
 
     // нулевой бит
-    if (isSetBit(val1.bits, 0) || isSetBit(val2.bits, 0))
+    if (isSetBit(val1.bits, 0) && isSetBit(val2.bits, 0))
+        resetBit(res->bits, 0);
+    else if (isSetBit(val1.bits, 0) || isSetBit(val2.bits, 0))
         setBit(res->bits, 0);
     else
         resetBit(res->bits, 0);
