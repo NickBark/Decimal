@@ -35,6 +35,7 @@ void s21_zero_exp(s21_decimal* val);
 void normalozation(s21_decimal* val1, s21_decimal* val2);
 int mnt_comp(s21_decimal val1, s21_decimal val2);
 void mntShift(s21_decimal* val);
+void mntCpy(s21_decimal* val1, s21_decimal* val2);
 
 //Операторы сравнение
 int s21_is_less(s21_decimal val1, s21_decimal val2);
