@@ -247,7 +247,6 @@ void normalozation(s21_decimal* val1, s21_decimal* val2) {
             mntShift(val2);
             mntShift(val2);
             mntShift(&tmp);
-            //!!!!!!!!!!!!!!!! переделать в сумму побитово (не логич а просто)
             mntAdd(*val2, tmp, val2);
         }
     } else if (val1->pat.exp < val2->pat.exp) {
