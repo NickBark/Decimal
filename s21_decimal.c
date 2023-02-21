@@ -285,26 +285,56 @@ void mntCpy(s21_decimal* val1, s21_decimal* val2) {
 }
 
 void mntAdd(s21_decimal val1, s21_decimal val2, s21_decimal* res) {
+    int addOne = 0;
     // обнуляем мантиссу результата
     for (int i = 0; i < 96; i++) resetBit(res->bits, i);
 
-    // нулевой бит
-    if (isSetBit(val1.bits, 0) && isSetBit(val2.bits, 0))
-        resetBit(res->bits, 0);
-    else if (isSetBit(val1.bits, 0) || isSetBit(val2.bits, 0))
-        setBit(res->bits, 0);
-    else
-        resetBit(res->bits, 0);
+    int v1 = 0;
+    int v2 = 0;
 
-    // все остальные биты
     for (int i = 0; i < 96; i++) {
-        if (isSetBit(val1.bits, i - 1) && isSetBit(val2.bits, i - 1)) {
+        v1 = isSetBit(val1.bits, i);
+        v2 = isSetBit(val2.bits, i);
+
+        if (v1 == 0 && v2 == 0 && addOne == 0) {
+            resetBit(res->bits, i);
+            addOne = 0;
+        } else if (v1 == 1 && v2 == 1 && addOne == 1) {
             setBit(res->bits, i);
-        } else {
-            if (isSetBit(val1.bits, i) || isSetBit(val2.bits, i))
-                setBit(res->bits, i);
-            else
-                resetBit(res->bits, i);
+            addOne = 1;
+        } else if ((v1 ^ v2 ^ addOne) == 0) {
+            resetBit(res->bits, i);
+            addOne = 1;
+        } else if ((v1 ^ v2 ^ addOne) == 1) {
+            setBit(res->bits, i);
+            addOne = 0;
         }
     }
 }
+
+// // нулевой бит
+// if (isSetBit(val1.bits, 0) && isSetBit(val2.bits, 0))
+//     resetBit(res->bits, 0);
+// else if (isSetBit(val1.bits, 0) || isSetBit(val2.bits, 0))
+//     setBit(res->bits, 0);
+// else
+//     resetBit(res->bits, 0);
+
+// // все остальные биты
+// for (int i = 0; i < 96; i++) {
+//     if (isSetBit(val1.bits, i - 1) && isSetBit(val2.bits, i - 1))
+//         addOne = 1;
+
+//     if (isSetBit(val1.bits, i) && isSetBit(val2.bits, i) && addOne) {
+//         setBit(res->bits, i);
+//         addOne = 1;
+//     } else if (isSetBit(val1.bits, i) && isSetBit(val2.bits, i)) {
+//         resetBit(res->bits, i);
+//         addOne = 1;
+//     }
+
+//     if (isSetBit(val1.bits, i) || isSetBit(val2.bits, i) && addOne) {
+//         resetBit(res->bits, i);
+//         addOne = 1;
+//     }
+// }
