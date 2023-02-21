@@ -11,12 +11,12 @@ endif
 
 all: clean $(LIB)
 
-$(LIB): s21_decimal.o arithmetic.o
-	ar rc $(LIB) s21_decimal.o arithmetic.o
+$(LIB): s21_decimal.o arithmetic.o support.o
+	ar rc $(LIB) s21_decimal.o arithmetic.o support.o
 	rm *.o
 
-debug: $(LIB) main.o support.o
-	$(CC) $(CFLAGS) main.o support.o $(LIB) -lm -o debug
+debug: $(LIB) main.o
+	$(CC) $(CFLAGS) main.o $(LIB) -lm -o debug
 
 test: $(LIB) test.o
 	$(CC) $(CFLAGS) test.o $(LIB) $(TEST_FLAGS) -o test
