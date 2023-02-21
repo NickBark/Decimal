@@ -37,6 +37,7 @@ int mnt_comp(s21_decimal val1, s21_decimal val2);
 void mntShift(s21_decimal* val);
 void mntCpy(s21_decimal* val1, s21_decimal* val2);
 int mntAdd(s21_decimal val1, s21_decimal val2, s21_decimal* res);
+void multByTen(s21_decimal* val);
 
 //Операторы сравнение
 int s21_is_less(s21_decimal val1, s21_decimal val2);

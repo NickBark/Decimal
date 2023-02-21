@@ -232,25 +232,25 @@ int mnt_comp(s21_decimal val1, s21_decimal val2) {
 void normalozation(s21_decimal* val1, s21_decimal* val2) {
     int offset = abs(val1->pat.exp - val2->pat.exp);
     int wrongWay = 0;
-    s21_decimal tmp = {};
 
     if (val1->pat.exp > val2->pat.exp) {
-        mntCpy(val2, &tmp);
         for (int i = 0; i < offset; i++) {
             //умножение на 10;
             if (isSetBit(val2->bits, 95)) {
                 wrongWay = 1;
                 break;
             }
-            mntCpy(val2, &tmp);
-            mntShift(val2);
-            mntShift(val2);
-            mntShift(val2);
-            mntShift(&tmp);
-            mntAdd(*val2, tmp, val2);
+            multByTen(val2);
         }
     } else if (val1->pat.exp < val2->pat.exp) {
-        mntShift(val1);
+        for (int i = 0; i < offset; i++) {
+            //умножение на 10;
+            if (isSetBit(val1->bits, 95)) {
+                wrongWay = 1;
+                break;
+            }
+            multByTen(val1);
+        }
     }
 }
 
@@ -315,6 +315,16 @@ int mntAdd(s21_decimal val1, s21_decimal val2, s21_decimal* res) {
     }
 
     return ret;
+}
+
+void multByTen(s21_decimal* val) {
+    s21_decimal tmp = {};
+    mntCpy(val, &tmp);
+    mntShift(val);
+    mntShift(val);
+    mntShift(val);
+    mntShift(&tmp);
+    mntAdd(*val, tmp, val);
 }
 
 // // нулевой бит

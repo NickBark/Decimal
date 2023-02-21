@@ -12,6 +12,11 @@ int main() {
     //     printf("b:%2d: %d\n", i, isSetBit(ppp2.bits, i));
     // }
     // printf("---------------\n");
+
+    // int a = 300;
+    // a = (a >> 3) + (a << 1);
+    // printf(":%u\n", a);
+
     printf("exp1:%u\n", ppp1.pat.exp);
     printf("exp2:%u\n", ppp2.pat.exp);
 
