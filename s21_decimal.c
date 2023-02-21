@@ -235,17 +235,19 @@ void normalozation(s21_decimal* val1, s21_decimal* val2) {
 
     if (val1->pat.exp > val2->pat.exp) {
         mntCpy(val2, &tmp);
+        for (int i = 0; i < offset; i++) {
+            //умножение на 10;
+            mntCpy(val2, &tmp);
 
-        //умножение на 10;
-        mntShift(val2);
-        mntShift(val2);
-        mntShift(val2);
-        mntShift(&tmp);
-        //!!!!!!!!!!!!!!!! переделать в сумму побитово (не логич а просто)
-        val2->pat.mnt1 += tmp.pat.mnt1;
-        val2->pat.mnt2 += tmp.pat.mnt2;
-        val2->pat.mnt3 += tmp.pat.mnt3;
-
+            mntShift(val2);
+            mntShift(val2);
+            mntShift(val2);
+            mntShift(&tmp);
+            //!!!!!!!!!!!!!!!! переделать в сумму побитово (не логич а просто)
+            val2->pat.mnt1 += tmp.pat.mnt1;
+            val2->pat.mnt2 += tmp.pat.mnt2;
+            val2->pat.mnt3 += tmp.pat.mnt3;
+        }
     } else if (val1->pat.exp < val2->pat.exp) {
         mntShift(val1);
     }
