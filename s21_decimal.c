@@ -248,9 +248,7 @@ void normalozation(s21_decimal* val1, s21_decimal* val2) {
             mntShift(val2);
             mntShift(&tmp);
             //!!!!!!!!!!!!!!!! переделать в сумму побитово (не логич а просто)
-            val2->pat.mnt1 += tmp.pat.mnt1;
-            val2->pat.mnt2 += tmp.pat.mnt2;
-            val2->pat.mnt3 += tmp.pat.mnt3;
+            mntAdd(*val2, tmp, val2);
         }
     } else if (val1->pat.exp < val2->pat.exp) {
         mntShift(val1);
@@ -284,7 +282,12 @@ void mntCpy(s21_decimal* val1, s21_decimal* val2) {
     }
 }
 
-void mntAdd(s21_decimal val1, s21_decimal val2, s21_decimal* res) {
+//Возвращаемое значение:
+// 0 - ОК
+// 1 - Число слишком велико или равно бесконечности
+
+int mntAdd(s21_decimal val1, s21_decimal val2, s21_decimal* res) {
+    int ret = 0;
     int addOne = 0;
     // обнуляем мантиссу результата
     for (int i = 0; i < 96; i++) resetBit(res->bits, i);
@@ -300,9 +303,11 @@ void mntAdd(s21_decimal val1, s21_decimal val2, s21_decimal* res) {
             resetBit(res->bits, i);
             addOne = 0;
         } else if (v1 == 1 && v2 == 1 && addOne == 1) {
+            if (i == 95) ret = 1;
             setBit(res->bits, i);
             addOne = 1;
         } else if ((v1 ^ v2 ^ addOne) == 0) {
+            if (i == 95) ret = 1;
             resetBit(res->bits, i);
             addOne = 1;
         } else if ((v1 ^ v2 ^ addOne) == 1) {
@@ -310,6 +315,8 @@ void mntAdd(s21_decimal val1, s21_decimal val2, s21_decimal* res) {
             addOne = 0;
         }
     }
+
+    return ret;
 }
 
 // // нулевой бит

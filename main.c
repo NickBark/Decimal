@@ -5,25 +5,29 @@
 #include "support.h"
 
 int main() {
-    s21_decimal ppp1 = {{0X3, 0x0, 0x0, 0b00110000000001010000000000000000}};
-    s21_decimal ppp2 = {{0X3, 0x0, 0x13, 0b00110000000000010000000000000000}};
+    s21_decimal ppp1 = {{0X3, 0x0, 0x0, 0b00110000000001110000000000000000}};
+    s21_decimal ppp2 = {{0X3, 0x0, 0xF8, 0b00110000000000010000000000000000}};
 
     // for (int i = 0; i < 96; i++) {
     //     printf("b:%2d: %d\n", i, isSetBit(ppp2.bits, i));
     // }
     // printf("---------------\n");
+    printf("exp1:%u\n", ppp1.pat.exp);
+    printf("exp2:%u\n", ppp2.pat.exp);
+
     printf("%u\n", ppp2.bits[0]);
     printf("%u\n", ppp2.bits[1]);
     printf("%u\n", ppp2.bits[2]);
 
     normalozation(&ppp1, &ppp2);
     // printf("---------------\n");
-    // for (int i = 0; i < 96; i++) {
-    //     printf("b:%2d: %d\n", i, isSetBit(ppp2.bits, i));
-    // }
+
     printf("%u\n", ppp2.bits[0]);
     printf("%u\n", ppp2.bits[1]);
     printf("%u\n", ppp2.bits[2]);
+    for (int i = 0; i < 96; i++) {
+        printf("b:%2d: %d\n", i, isSetBit(ppp2.bits, i));
+    }
 
     // for (int i = 0; i < 96; i++) {
     //     printf("b:%2d: %d\n", i, isSetBit(ppp2.bits, i));
