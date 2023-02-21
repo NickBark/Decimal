@@ -5,6 +5,7 @@
 #include <stdio.h>
 //---
 
+#include <math.h>
 #include <stdint.h>  // для максимальных, минимальных значений и для типов (uint)
 #include <stdlib.h>
 
@@ -31,8 +32,9 @@ typedef union s21_decimal {
 
 //Вспомогательные функции
 void s21_zero_exp(s21_decimal* val);
-void s21_normalozation(s21_decimal* val1, s21_decimal* val2);
+void normalozation(s21_decimal* val1, s21_decimal* val2);
 int mnt_comp(s21_decimal val1, s21_decimal val2);
+void mntShift(s21_decimal* val);
 
 //Операторы сравнение
 int s21_is_less(s21_decimal val1, s21_decimal val2);

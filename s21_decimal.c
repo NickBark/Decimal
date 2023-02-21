@@ -1,36 +1,5 @@
 #include "s21_decimal.h"
 
-void s21_normalozation(s21_decimal* val1, s21_decimal* val2) {
-    int offset = 0;
-    if (val1->pat.exp > val2->pat.exp) {
-        printf("val2 mnt1: %u\n", val2->pat.mnt1);
-        printf("val2 mnt2: %u\n", val2->pat.mnt2);
-        printf("val2 mnt3: %u\n", val2->pat.mnt3);
-
-        offset = val1->pat.exp - val2->pat.exp;
-        printf("offset: %u\n", offset);
-
-        for (size_t i = offset; i > 0; i--) {
-            val2->pat.mnt1 *= 10;
-            val2->pat.mnt2 *= 10;
-            val2->pat.mnt3 *= 10;
-        }
-
-        printf("val2 mnt1: %u\n", val2->pat.mnt1);
-        printf("val2 mnt2: %u\n", val2->pat.mnt2);
-        printf("val2 mnt3: %u\n", val2->pat.mnt3);
-    } else if (val1->pat.exp < val2->pat.exp) {
-        offset = val2->pat.exp - val1->pat.exp;
-        val1->pat.mnt1 *= 10 * offset;
-        val1->pat.mnt2 *= 10 * offset;
-        val1->pat.mnt3 *= 10 * offset;
-
-        printf("val1 mnt1: %u\n", val1->pat.mnt1);
-        printf("val1 mnt2: %u\n", val1->pat.mnt2);
-        printf("val1 mnt3: %u\n", val1->pat.mnt3);
-    }
-}
-
 int s21_is_less(s21_decimal val1, s21_decimal val2) {
     int res = 0;
     int neg = 0;
@@ -47,7 +16,7 @@ int s21_is_less(s21_decimal val1, s21_decimal val2) {
         else if (val1.pat.exp < val2.pat.exp)
             res = neg ? 1 : 0;
     } else {
-        s21_normalozation(&val1, &val2);
+        // s21_normalozation(&val1, &val2);
 
         if (val1.pat.sgn && !val2.pat.sgn)
             res = 1;
@@ -258,4 +227,36 @@ int mnt_comp(s21_decimal val1, s21_decimal val2) {
     }
 
     return larger;
+}
+
+void normalozation(s21_decimal* val1, s21_decimal* val2) {
+    int offset = abs(val1->pat.exp - val2->pat.exp);
+
+    if (val1->pat.exp > val2->pat.exp) {
+        mntShift(val2);
+    } else if (val1->pat.exp < val2->pat.exp) {
+        mntShift(val1);
+    }
+}
+
+void mntShift(s21_decimal* val) {
+    s21_decimal tmp = {};
+
+    //копирование в tmp
+    for (int i = 0; i < 96; i++) {
+        if (isSetBit(val->bits, i))
+            setBit(tmp.bits, i);
+        else
+            resetBit(tmp.bits, i);
+    }
+
+    //смещение мантиссы на 1
+    for (int i = 1; i < 96; i++) {
+        if (isSetBit(tmp.bits, i - 1)) {
+            setBit(val->bits, i);
+        } else {
+            resetBit(val->bits, i);
+        }
+    }
+    resetBit(val->bits, 0);
 }
