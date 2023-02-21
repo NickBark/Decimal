@@ -231,14 +231,18 @@ int mnt_comp(s21_decimal val1, s21_decimal val2) {
 
 void normalozation(s21_decimal* val1, s21_decimal* val2) {
     int offset = abs(val1->pat.exp - val2->pat.exp);
+    int wrongWay = 0;
     s21_decimal tmp = {};
 
     if (val1->pat.exp > val2->pat.exp) {
         mntCpy(val2, &tmp);
         for (int i = 0; i < offset; i++) {
             //умножение на 10;
+            if (isSetBit(val2->bits, 95)) {
+                wrongWay = 1;
+                break;
+            }
             mntCpy(val2, &tmp);
-
             mntShift(val2);
             mntShift(val2);
             mntShift(val2);
@@ -280,4 +284,25 @@ void mntCpy(s21_decimal* val1, s21_decimal* val2) {
     }
 }
 
-void mntAdd() {}
+void mntAdd(s21_decimal val1, s21_decimal val2, s21_decimal* res) {
+    // обнуляем мантиссу результата
+    for (int i = 0; i < 96; i++) resetBit(res->bits, i);
+
+    // нулевой бит
+    if (isSetBit(val1.bits, 0) || isSetBit(val2.bits, 0))
+        setBit(res->bits, 0);
+    else
+        resetBit(res->bits, 0);
+
+    // все остальные биты
+    for (int i = 0; i < 96; i++) {
+        if (isSetBit(val1.bits, i - 1) && isSetBit(val2.bits, i - 1)) {
+            setBit(res->bits, i);
+        } else {
+            if (isSetBit(val1.bits, i) || isSetBit(val2.bits, i))
+                setBit(res->bits, i);
+            else
+                resetBit(res->bits, i);
+        }
+    }
+}
