@@ -34,9 +34,10 @@ typedef union s21_decimal {
 void s21_zero_exp(s21_decimal* val);
 void normalozation(s21_decimal* val1, s21_decimal* val2);
 int mnt_comp(s21_decimal val1, s21_decimal val2);
-void mntShift(s21_decimal* val);
+void mntShiftLeft(s21_decimal* val);
 void mntCpy(s21_decimal* val1, s21_decimal* val2);
 int mntAdd(s21_decimal val1, s21_decimal val2, s21_decimal* res);
+int mntSub(s21_decimal val1, s21_decimal val2, s21_decimal* res);
 void multByTen(s21_decimal* val);
 
 //Операторы сравнение

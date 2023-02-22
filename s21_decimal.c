@@ -254,7 +254,7 @@ void normalozation(s21_decimal* val1, s21_decimal* val2) {
     }
 }
 
-void mntShift(s21_decimal* val) {
+void mntShiftLeft(s21_decimal* val) {
     s21_decimal tmp = {};
 
     //копирование в tmp
@@ -317,39 +317,44 @@ int mntAdd(s21_decimal val1, s21_decimal val2, s21_decimal* res) {
     return ret;
 }
 
+int mntSub(s21_decimal val1, s21_decimal val2, s21_decimal* res) {
+    int ret = 0;
+    int rank = 0;
+    int whoInv = 0;  // число для инверсии: 1 - val1, 2 - val2;
+
+    // запоминаем индекс единицы
+    for (int i = 95; i != -1; i--) {
+        if ((isSetBit(val1.bits, i) || isSetBit(val2.bits, i)) && !rank)
+            rank = i;
+    }
+
+    // выбираем число для инверсии
+    whoInv = mnt_comp(val1, val2) == 1 ? 1 : 2;
+
+    //инверсия
+    for (int i = 0; i <= rank; i++) {
+        inverseBit(whoInv == 1 ? val1.bits : val2.bits, i);
+    }
+
+    //сложение
+    mntAdd(val1, val2, res);
+
+    //инверсия результата
+    for (int i = 0; i <= rank; i++) {
+        inverseBit(res->bits, i);
+    }
+
+    res->pat.sgn = whoInv == 1 ? 0 : 1;
+
+    return ret;
+}
+
 void multByTen(s21_decimal* val) {
     s21_decimal tmp = {};
     mntCpy(val, &tmp);
-    mntShift(val);
-    mntShift(val);
-    mntShift(val);
-    mntShift(&tmp);
+    mntShiftLeft(val);
+    mntShiftLeft(val);
+    mntShiftLeft(val);
+    mntShiftLeft(&tmp);
     mntAdd(*val, tmp, val);
 }
-
-// // нулевой бит
-// if (isSetBit(val1.bits, 0) && isSetBit(val2.bits, 0))
-//     resetBit(res->bits, 0);
-// else if (isSetBit(val1.bits, 0) || isSetBit(val2.bits, 0))
-//     setBit(res->bits, 0);
-// else
-//     resetBit(res->bits, 0);
-
-// // все остальные биты
-// for (int i = 0; i < 96; i++) {
-//     if (isSetBit(val1.bits, i - 1) && isSetBit(val2.bits, i - 1))
-//         addOne = 1;
-
-//     if (isSetBit(val1.bits, i) && isSetBit(val2.bits, i) && addOne) {
-//         setBit(res->bits, i);
-//         addOne = 1;
-//     } else if (isSetBit(val1.bits, i) && isSetBit(val2.bits, i)) {
-//         resetBit(res->bits, i);
-//         addOne = 1;
-//     }
-
-//     if (isSetBit(val1.bits, i) || isSetBit(val2.bits, i) && addOne) {
-//         resetBit(res->bits, i);
-//         addOne = 1;
-//     }
-// }
