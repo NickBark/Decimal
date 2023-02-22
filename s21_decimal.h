@@ -35,6 +35,7 @@ void s21_zero_exp(s21_decimal* val);
 void normalozation(s21_decimal* val1, s21_decimal* val2);
 int mnt_comp(s21_decimal val1, s21_decimal val2);
 void mntShiftLeft(s21_decimal* val, int shift);
+void mntShiftRight(s21_decimal* val, int shift);
 void mntCpy(s21_decimal* val1, s21_decimal* val2);
 int mntAdd(s21_decimal val1, s21_decimal val2, s21_decimal* res);
 int mntSub(s21_decimal val1, s21_decimal val2, s21_decimal* res);

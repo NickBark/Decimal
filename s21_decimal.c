@@ -273,6 +273,25 @@ void mntShiftLeft(s21_decimal* val, int shift) {
     }
 }
 
+void mntShiftRight(s21_decimal* val, int shift) {
+    s21_decimal tmp = {};
+
+    for (int i = 0; i < shift; i++) {
+        //копирование в tmp
+        mntCpy(val, &tmp);
+
+        //смещение мантиссы на 1
+        for (int i = 94; i != -1; i--) {
+            if (isSetBit(tmp.bits, i + 1)) {
+                setBit(val->bits, i);
+            } else {
+                resetBit(val->bits, i);
+            }
+        }
+        resetBit(val->bits, 95);
+    }
+}
+
 //копируе val1 в val2
 void mntCpy(s21_decimal* val1, s21_decimal* val2) {
     for (int i = 0; i < 96; i++) {

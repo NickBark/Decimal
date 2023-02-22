@@ -27,7 +27,7 @@ int main() {
     for (int i = 95; i != -1; i--) {
         printf("%u", isSetBit(ppp1.bits, i));
     }
-    mntShiftLeft(&ppp1, 30);
+    mntShiftRight(&ppp1, 1);
     printf("\n");
     printf("ppp1:\t");
     for (int i = 95; i != -1; i--) {
