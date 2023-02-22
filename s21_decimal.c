@@ -254,21 +254,23 @@ void normalozation(s21_decimal* val1, s21_decimal* val2) {
     }
 }
 
-void mntShiftLeft(s21_decimal* val) {
+void mntShiftLeft(s21_decimal* val, int shift) {
     s21_decimal tmp = {};
 
-    //копирование в tmp
-    mntCpy(val, &tmp);
+    for (int i = 0; i < shift; i++) {
+        //копирование в tmp
+        mntCpy(val, &tmp);
 
-    //смещение мантиссы на 1
-    for (int i = 1; i < 96; i++) {
-        if (isSetBit(tmp.bits, i - 1)) {
-            setBit(val->bits, i);
-        } else {
-            resetBit(val->bits, i);
+        //смещение мантиссы на 1
+        for (int i = 1; i < 96; i++) {
+            if (isSetBit(tmp.bits, i - 1)) {
+                setBit(val->bits, i);
+            } else {
+                resetBit(val->bits, i);
+            }
         }
+        resetBit(val->bits, 0);
     }
-    resetBit(val->bits, 0);
 }
 
 //копируе val1 в val2
@@ -345,9 +347,7 @@ int mntSub(s21_decimal val1, s21_decimal val2, s21_decimal* res) {
 void multByTen(s21_decimal* val) {
     s21_decimal tmp = {};
     mntCpy(val, &tmp);
-    mntShiftLeft(val);
-    mntShiftLeft(val);
-    mntShiftLeft(val);
-    mntShiftLeft(&tmp);
+    mntShiftLeft(val, 3);
+    mntShiftLeft(&tmp, 1);
     mntAdd(*val, tmp, val);
 }

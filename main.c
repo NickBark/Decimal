@@ -22,20 +22,27 @@ int main() {
     // }
     // printf("---------------\n");
 
-    mntSub(ppp1, ppp2, &res);
+    // mntSub(ppp1, ppp2, &res);
     printf("ppp1:\t");
     for (int i = 95; i != -1; i--) {
         printf("%u", isSetBit(ppp1.bits, i));
     }
-    printf("\nppp2:\t");
+    mntShiftLeft(&ppp1, 30);
+    printf("\n");
+    printf("ppp1:\t");
     for (int i = 95; i != -1; i--) {
-        printf("%u", isSetBit(ppp2.bits, i));
+        printf("%u", isSetBit(ppp1.bits, i));
     }
-    printf("\nrest:\t");
-    for (int i = 95; i != -1; i--) {
-        printf("%u", isSetBit(res.bits, i));
-    }
-    printf("\nsgn: %u\n", res.pat.sgn);
+    printf("\n");
+    // printf("\nppp2:\t");
+    // for (int i = 95; i != -1; i--) {
+    //     printf("%u", isSetBit(ppp2.bits, i));
+    // }
+    // printf("\nrest:\t");
+    // for (int i = 95; i != -1; i--) {
+    //     printf("%u", isSetBit(res.bits, i));
+    // }
+    // printf("\nsgn: %u\n", res.pat.sgn);
 
     // for (int i = 1; i <= 96; i++) {
     //     if (i == 17 || i == 33 || i == 49 || i == 65 || i == 81)
