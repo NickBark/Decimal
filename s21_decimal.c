@@ -319,14 +319,8 @@ int mntAdd(s21_decimal val1, s21_decimal val2, s21_decimal* res) {
 
 int mntSub(s21_decimal val1, s21_decimal val2, s21_decimal* res) {
     int ret = 0;
-    int rank = 0;
+    int rank = 95;
     int whoInv = 0;  // число для инверсии: 1 - val1, 2 - val2;
-
-    // запоминаем индекс единицы
-    for (int i = 95; i != -1; i--) {
-        if ((isSetBit(val1.bits, i) || isSetBit(val2.bits, i)) && !rank)
-            rank = i;
-    }
 
     // выбираем число для инверсии
     whoInv = mnt_comp(val1, val2) == 1 ? 1 : 2;
