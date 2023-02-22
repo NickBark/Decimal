@@ -3,6 +3,7 @@
 int s21_is_less(s21_decimal val1, s21_decimal val2) {
     int res = 0;
     int neg = 0;
+    int comp = 0;
 
     s21_zero_exp(&val1);
     s21_zero_exp(&val2);
@@ -18,22 +19,14 @@ int s21_is_less(s21_decimal val1, s21_decimal val2) {
     } else {
         // s21_normalozation(&val1, &val2);
 
-        if (val1.pat.sgn && !val2.pat.sgn)
+        if (val1.pat.sgn && !val2.pat.sgn) {
             res = 1;
-        else if (!val1.pat.sgn && val2.pat.sgn)
+        } else if (!val1.pat.sgn && val2.pat.sgn) {
             res = 0;
-        else if (val1.pat.mnt3 < val2.pat.mnt3)
-            res = neg ? 0 : 1;
-        else if (val1.pat.mnt3 > val2.pat.mnt3)
-            res = neg ? 1 : 0;
-        else if (val1.pat.mnt2 < val2.pat.mnt2)
-            res = neg ? 0 : 1;
-        else if (val1.pat.mnt2 > val2.pat.mnt2)
-            res = neg ? 1 : 0;
-        else if (val1.pat.mnt1 < val2.pat.mnt1)
-            res = neg ? 0 : 1;
-        else if (val1.pat.mnt1 > val2.pat.mnt1)
-            res = neg ? 1 : 0;
+        } else {
+            comp = mnt_comp(val1, val2);
+            res = (comp == 0 || comp == 1) ? 0 : 1;
+        }
     }
 
     return res;
