@@ -24,7 +24,6 @@ int s21_is_less(s21_decimal val1, s21_decimal val2) {
         } else if (!val1.pat.sgn && val2.pat.sgn) {
             res = 0;
         } else {
-            
             res = (comp == 0 || comp == 1) ? 0 : 1;
         }
     }
