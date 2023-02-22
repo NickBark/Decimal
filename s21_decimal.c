@@ -9,9 +9,9 @@ int s21_is_less(s21_decimal val1, s21_decimal val2) {
     s21_zero_exp(&val2);
 
     neg = val1.pat.sgn && val2.pat.sgn ? 1 : 0;
+    comp = mnt_comp(val1, val2);
 
-    if (val1.pat.mnt1 == val2.pat.mnt1 && val1.pat.mnt2 == val2.pat.mnt2 &&
-        val1.pat.mnt3 == val2.pat.mnt3) {
+    if (!comp) {
         if (val1.pat.exp > val2.pat.exp)
             res = neg ? 0 : 1;
         else if (val1.pat.exp < val2.pat.exp)
@@ -24,7 +24,7 @@ int s21_is_less(s21_decimal val1, s21_decimal val2) {
         } else if (!val1.pat.sgn && val2.pat.sgn) {
             res = 0;
         } else {
-            comp = mnt_comp(val1, val2);
+            
             res = (comp == 0 || comp == 1) ? 0 : 1;
         }
     }
