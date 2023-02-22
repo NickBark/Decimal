@@ -319,14 +319,13 @@ int mntAdd(s21_decimal val1, s21_decimal val2, s21_decimal* res) {
 
 int mntSub(s21_decimal val1, s21_decimal val2, s21_decimal* res) {
     int ret = 0;
-    int rank = 95;
     int whoInv = 0;  // число для инверсии: 1 - val1, 2 - val2;
 
     // выбираем число для инверсии
     whoInv = mnt_comp(val1, val2) == 1 ? 1 : 2;
 
     //инверсия
-    for (int i = 0; i <= rank; i++) {
+    for (int i = 0; i <= 95; i++) {
         inverseBit(whoInv == 1 ? val1.bits : val2.bits, i);
     }
 
@@ -334,7 +333,7 @@ int mntSub(s21_decimal val1, s21_decimal val2, s21_decimal* res) {
     mntAdd(val1, val2, res);
 
     //инверсия результата
-    for (int i = 0; i <= rank; i++) {
+    for (int i = 0; i <= 95; i++) {
         inverseBit(res->bits, i);
     }
 
