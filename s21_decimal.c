@@ -17,7 +17,7 @@ int s21_is_less(s21_decimal val1, s21_decimal val2) {
         else if (val1.pat.exp < val2.pat.exp)
             res = neg ? 1 : 0;
     } else {
-        // s21_normalozation(&val1, &val2);
+        // normalozation(&val1, &val2);
 
         if (val1.pat.sgn && !val2.pat.sgn) {
             res = 1;
@@ -301,7 +301,7 @@ int mntAdd(s21_decimal val1, s21_decimal val2, s21_decimal* res) {
     int ret = 0;
     int addOne = 0;
     // обнуляем мантиссу результата
-    for (int i = 0; i < 96; i++) resetBit(res->bits, i);
+    mntZero(res);
 
     int v1 = 0;
     int v2 = 0;
@@ -355,10 +355,33 @@ int mntSub(s21_decimal val1, s21_decimal val2, s21_decimal* res) {
     return ret;
 }
 
+//С учетом знака
+int mntMul(s21_decimal val1, s21_decimal val2, s21_decimal* res) {
+    int ret = 0;
+    mntZero(res);
+
+    for (int i = 95; i != -1; i--) {
+        if (isSetBit(val2.bits, i)) {
+            mntShiftLeft(&val1, i);
+            mntAdd(*res, val1, res);
+            mntShiftRight(&val1, i);
+        }
+    }
+    res->pat.sgn = val1.pat.sgn ^ val2.pat.sgn;
+
+    return ret;
+}
+
 void multByTen(s21_decimal* val) {
     s21_decimal tmp = {};
     mntCpy(val, &tmp);
     mntShiftLeft(val, 3);
     mntShiftLeft(&tmp, 1);
     mntAdd(*val, tmp, val);
+}
+
+void divByTen(s21_decimal* val) {}
+
+void mntZero(s21_decimal* res) {
+    for (int i = 0; i < 96; i++) resetBit(res->bits, i);
 }

@@ -13,9 +13,8 @@ int divideBy127(int a) {
 }
 
 int main() {
-    s21_decimal ppp1 = {{0X3234, 0x0, 0x0, 0b00110000000000010000000000000000}};
-    s21_decimal ppp2 = {
-        {0X366543, 0x323, 0x0, 0b00110000000000010000000000000000}};
+    s21_decimal ppp1 = {{0X3, 0x0, 0x0, 0b10110000000000010000000000000000}};
+    s21_decimal ppp2 = {{0X3, 0x0, 0x0, 0b10110000000000010000000000000000}};
     s21_decimal res = {0};
     // for (int i = 0; i < 96; i++) {
     //     printf("b:%2d: %d\n", i, isSetBit(ppp2.bits, i));
@@ -24,14 +23,14 @@ int main() {
 
     // mntSub(ppp1, ppp2, &res);
     printf("ppp1:\t");
-    for (int i = 95; i != -1; i--) {
-        printf("%u", isSetBit(ppp1.bits, i));
+    for (int i = 127; i != -1; i--) {
+        printf("%u", isSetBit(res.bits, i));
     }
-    mntShiftRight(&ppp1, 1);
+    mntMul(ppp1, ppp2, &res);
     printf("\n");
     printf("ppp1:\t");
-    for (int i = 95; i != -1; i--) {
-        printf("%u", isSetBit(ppp1.bits, i));
+    for (int i = 127; i != -1; i--) {
+        printf("%u", isSetBit(res.bits, i));
     }
     printf("\n");
     // printf("\nppp2:\t");

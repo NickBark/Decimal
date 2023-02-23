@@ -39,7 +39,10 @@ void mntShiftRight(s21_decimal* val, int shift);
 void mntCpy(s21_decimal* val1, s21_decimal* val2);
 int mntAdd(s21_decimal val1, s21_decimal val2, s21_decimal* res);
 int mntSub(s21_decimal val1, s21_decimal val2, s21_decimal* res);
+int mntMul(s21_decimal val1, s21_decimal val2, s21_decimal* res);
 void multByTen(s21_decimal* val);
+void divByTen(s21_decimal* val);
+void mntZero(s21_decimal* res);
 
 //Операторы сравнение
 int s21_is_less(s21_decimal val1, s21_decimal val2);
