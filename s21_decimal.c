@@ -296,7 +296,7 @@ void mntCpy(s21_decimal* val1, s21_decimal* val2) {
 
 //Возвращаемое значение:
 // 0 - ОК
-// 1 - Число слишком велико или равно бесконечности
+// 1 - Число не помещается в мантиссу
 int mntAdd(s21_decimal val1, s21_decimal val2, s21_decimal* res) {
     int ret = 0;
     int addOne = 0;
