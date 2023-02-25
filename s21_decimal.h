@@ -9,8 +9,6 @@
 #include <stdint.h>  // для максимальных, минимальных значений и для типов (uint)
 #include <stdlib.h>
 
-#include "support.h"
-
 // typedef struct s21_decimal { // промежуточный этап, нуежен по тз или нет ?
 //     int bits[4];
 // } s21_decimal;
@@ -29,20 +27,6 @@ typedef union s21_decimal {
     unsigned int bits[4];
     BitPattern pat;
 } s21_decimal;
-
-//Вспомогательные функции
-void s21_zero_exp(s21_decimal* val);
-void normalozation(s21_decimal* val1, s21_decimal* val2);
-int mnt_comp(s21_decimal val1, s21_decimal val2);
-void mntShiftLeft(s21_decimal* val, int shift);
-void mntShiftRight(s21_decimal* val, int shift);
-void mntCpy(s21_decimal* val1, s21_decimal* val2);
-int mntAdd(s21_decimal val1, s21_decimal val2, s21_decimal* res);
-int mntSub(s21_decimal val1, s21_decimal val2, s21_decimal* res);
-int mntMul(s21_decimal val1, s21_decimal val2, s21_decimal* res);
-void multByTen(s21_decimal* val);
-void divByTen(s21_decimal* val);
-void mntZero(s21_decimal* res);
 
 //Операторы сравнение
 int s21_is_less(s21_decimal val1, s21_decimal val2);
