@@ -1,6 +1,6 @@
 CC= gcc
 CFLAGS=-g -Werror -Wextra -std=c11
-SOURSES= s21_decimal.c test.c main.c arithmetic.c support.c
+SOURSES= s21_decimal.c test.c main.c arithmetic.c support.c compare.c
 OBJECTS=$(SOURSES:.cpp=.o)
 TEST_FLAGS=-lcheck $(shell pkg-config --cflags --libs check)
 LIB=s21_decimal.a
@@ -11,7 +11,7 @@ endif
 
 all: clean $(LIB)
 
-$(LIB): s21_decimal.o arithmetic.o support.o
+$(LIB): s21_decimal.o arithmetic.o support.o compare.o
 	ar rc $(LIB) s21_decimal.o arithmetic.o support.o
 	rm *.o
 

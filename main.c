@@ -5,18 +5,28 @@
 #include "support.h"
 
 int main() {
-    s21_decimal ppp1 = {{22, 0x10, 0x0, 0b00110000000000010000000000000000}};
-    s21_decimal ppp2 = {{10, 0x4, 0x0, 0b00110000000000010000000000000000}};
-    s21_decimal res = {0};
+    s21_decimal ppp1 = {{13, 0x0, 0x0, 0}};
+    s21_decimal ppp2 = {{12, 0x2, 0x00ffffff, 0}};
+    ppp1.pat.exp = 5;
+    ppp2.pat.exp = 4;
 
-    mntDiv(ppp1, ppp2, &res);
+    // printf("ppp1:");
+    // printBit(ppp1);
 
-    printBit(ppp1);
-    printBit(ppp2);
-    printBit(res);
+    // printf("ppp2:");
+    // printBit(ppp2);
 
-    mntMod(ppp1, ppp2, &res);
-    printBit(res);
+    // normalozation(&ppp1, &ppp2);
+
+    // printf("ppp1:");
+    // printBit(ppp1);
+
+    // printf("ppp2:");
+    // printBit(ppp2);
+
+    int a = 0;
+    a = !a;
+    printf("%d", a);
 
     return 0;
 }

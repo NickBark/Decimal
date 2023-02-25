@@ -52,37 +52,32 @@ int mnt_comp(s21_decimal val1, s21_decimal val2) {
 }
 
 void normalozation(s21_decimal* val1, s21_decimal* val2) {
-    int offset = abs(val1->pat.exp - val2->pat.exp);
-
     if (val1->pat.exp > val2->pat.exp) {
-        mntNorm(val2, offset);
+        mntNorm(val2, val1);
     } else if (val1->pat.exp < val2->pat.exp) {
-        mntNorm(val1, offset);
+        mntNorm(val1, val2);
     }
 }
 
-void mntNorm(s21_decimal* val, int offset) {
+void mntNorm(s21_decimal* val1, s21_decimal* val2) {
     int wrongWay = 0;
-    s21_decimal tmp = {};
     s21_decimal ten = {{10, 0, 0, 0}};
 
-    mntCpy(val, &tmp);
-    for (int i = 0; i < offset; i++) {
-        //умножение на 10;
-        if (isSetBit(val->bits, 95)) {
+    while (val1->pat.exp != val2->pat.exp) {
+        if (isSetBit(val1->bits, 95) || isSetBit(val1->bits, 94) ||
+            isSetBit(val1->bits, 93) || isSetBit(val1->bits, 92)) {
             wrongWay = 1;
             break;
         }
-        multByTen(&tmp);
+        multByTen(val1);
+        val1->pat.exp++;
     }
     if (wrongWay) {
-        mntZero(&tmp);
-        mntCpy(val, &tmp);
-        for (int i = 0; i < offset; i++) {
-            mntDiv(tmp, ten, val);
+        while (val1->pat.exp != val2->pat.exp) {
+            mntDiv(*val2, ten, val2);
+            val2->pat.exp--;
         }
     }
-    mntCpy(&tmp, val);
 }
 
 void mntShiftLeft(s21_decimal* val, int shift) {

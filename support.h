@@ -31,6 +31,6 @@ void multByTen(s21_decimal* val);
 void divByTen(s21_decimal* val);
 void mntZero(s21_decimal* res);
 void printBit(s21_decimal val);
-void mntNorm(s21_decimal* val, int offset);
+void mntNorm(s21_decimal* val1, s21_decimal* val2);
 
 #endif  // SUPPORT_H
