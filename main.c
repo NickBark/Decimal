@@ -15,5 +15,8 @@ int main() {
     printBit(ppp2);
     printBit(res);
 
+    mntMod(ppp1, ppp2, &res);
+    printBit(res);
+
     return 0;
 }

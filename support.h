@@ -26,9 +26,11 @@ int mntAdd(s21_decimal val1, s21_decimal val2, s21_decimal* res);
 int mntSub(s21_decimal val1, s21_decimal val2, s21_decimal* res);
 int mntMul(s21_decimal val1, s21_decimal val2, s21_decimal* res);
 int mntDiv(s21_decimal dividend, s21_decimal divisor, s21_decimal* res);
+int mntMod(s21_decimal dividend, s21_decimal divisor, s21_decimal* res);
 void multByTen(s21_decimal* val);
 void divByTen(s21_decimal* val);
 void mntZero(s21_decimal* res);
 void printBit(s21_decimal val);
+void mntNorm(s21_decimal* val, int offset);
 
 #endif  // SUPPORT_H

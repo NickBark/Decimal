@@ -53,42 +53,36 @@ int mnt_comp(s21_decimal val1, s21_decimal val2) {
 
 void normalozation(s21_decimal* val1, s21_decimal* val2) {
     int offset = abs(val1->pat.exp - val2->pat.exp);
-    int wrongWay = 0;
-    s21_decimal tmp = {};
 
     if (val1->pat.exp > val2->pat.exp) {
-        mntCpy(val2, &tmp);
-        for (int i = 0; i < offset; i++) {
-            //умножение на 10;
-            if (isSetBit(val2->bits, 95)) {
-                wrongWay = 1;
-                break;
-            }
-            multByTen(&tmp);
-        }
-        if (wrongWay) {
-            mntZero(&tmp);
-            mntCpy(val2, &tmp);
-            for (int i = 0; i < offset; i++) {
-                //деление на 10
-            }
-        }
-        mntCpy(&tmp, val2);
+        mntNorm(val2, offset);
     } else if (val1->pat.exp < val2->pat.exp) {
-        for (int i = 0; i < offset; i++) {
-            //умножение на 10;
-            if (isSetBit(val1->bits, 95)) {
-                wrongWay = 1;
-                break;
-            }
-            multByTen(val1);
+        mntNorm(val1, offset);
+    }
+}
+
+void mntNorm(s21_decimal* val, int offset) {
+    int wrongWay = 0;
+    s21_decimal tmp = {};
+    s21_decimal ten = {{10, 0, 0, 0}};
+
+    mntCpy(val, &tmp);
+    for (int i = 0; i < offset; i++) {
+        //умножение на 10;
+        if (isSetBit(val->bits, 95)) {
+            wrongWay = 1;
+            break;
         }
-        if (wrongWay) {
-            for (int i = 0; i < offset; i++) {
-                //деление на 10
-            }
+        multByTen(&tmp);
+    }
+    if (wrongWay) {
+        mntZero(&tmp);
+        mntCpy(val, &tmp);
+        for (int i = 0; i < offset; i++) {
+            mntDiv(tmp, ten, val);
         }
     }
+    mntCpy(&tmp, val);
 }
 
 void mntShiftLeft(s21_decimal* val, int shift) {
@@ -231,9 +225,24 @@ int mntDiv(s21_decimal dividend, s21_decimal divisor, s21_decimal* res) {
             setBit(res->bits, i);
         }
     }
-    printf("rem: ");
-    printBit(remainder);
+
     res->pat.sgn = dividend.pat.sgn ^ divisor.pat.sgn;
+
+    return ret;
+}
+
+int mntMod(s21_decimal dividend, s21_decimal divisor, s21_decimal* res) {
+    int ret = 0;
+    mntZero(res);
+
+    for (int i = 95; i >= 0; i--) {
+        mntShiftLeft(res, 1);
+
+        res->pat.mnt1 |= isSetBit(dividend.bits, i);
+        if (mnt_comp(*res, divisor) != 2) {
+            mntSub(*res, divisor, res);
+        }
+    }
 
     return ret;
 }
