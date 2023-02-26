@@ -5,9 +5,14 @@
 #include <stdio.h>
 //---
 
+#include <limits.h>
 #include <math.h>
 #include <stdint.h>  // для максимальных, минимальных значений и для типов (uint)
 #include <stdlib.h>
+
+#define S21_NAN 0.0 / 0.0
+#define S21_INF 1.0 / 0.0
+#define S21_MINF -1.0 / 0.0
 
 // typedef struct s21_decimal { // промежуточный этап, нуежен по тз или нет ?
 //     int bits[4];

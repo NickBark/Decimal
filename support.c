@@ -250,15 +250,13 @@ void multByTen(s21_decimal* val) {
     mntAdd(*val, tmp, val);
 }
 
-void divByTen(s21_decimal* val) {}
-
 void mntZero(s21_decimal* res) {
     for (int i = 0; i < 96; i++) resetBit(res->bits, i);
 }
 
 void printBit(s21_decimal val) {
     for (int i = 127; i >= 0; i--) {
-        if (i == 95) printf("\t");
+        if (i == 95 || i == 126 || i == 127) printf(" ");
         printf("%u", isSetBit(val.bits, i));
     }
     printf("\n");

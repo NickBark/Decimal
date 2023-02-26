@@ -11,8 +11,8 @@ endif
 
 all: clean $(LIB)
 
-$(LIB): s21_decimal.o arithmetic.o support.o compare.o
-	ar rc $(LIB) s21_decimal.o arithmetic.o support.o
+$(LIB): arithmetic.o support.o compare.o
+	ar rc $(LIB) arithmetic.o support.o compare.o
 	rm *.o
 
 debug: $(LIB) main.o
