@@ -31,5 +31,11 @@ void multByTen(s21_decimal* val);
 void mntZero(s21_decimal* res);
 void printBit(s21_decimal val);
 void mntNorm(s21_decimal* val1, s21_decimal* val2);
+int mntOverflow(s21_decimal val1, s21_decimal val2);
+int equalMinf(s21_decimal val1, s21_decimal val2);
+int equalInf(s21_decimal val1, s21_decimal val2);
+
+int mntDiv2(s21_decimal dividend, s21_decimal divisor, s21_decimal* res,
+            s21_decimal* rem);
 
 #endif  // SUPPORT_H

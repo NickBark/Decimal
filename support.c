@@ -226,6 +226,31 @@ int mntDiv(s21_decimal dividend, s21_decimal divisor, s21_decimal* res) {
     return ret;
 }
 
+int mntDiv2(s21_decimal dividend, s21_decimal divisor, s21_decimal* res,
+            s21_decimal* rem) {
+    s21_decimal tmp = {};
+    int ret = 0;
+    int offset = 0;
+
+    mntZero(res);
+
+    while (mnt_comp(dividend, divisor) == 1) {
+        offset = 0;
+        mntCpy(&divisor, &tmp);
+        while (mnt_comp(tmp, dividend) == 2) {
+            offset++;
+            mntShiftLeft(&tmp, 1);
+        }
+        offset--;
+        mntShiftRight(&tmp, 1);
+        setBit(res->bits, offset);
+        mntSub(dividend, tmp, &dividend);
+    }
+    mntCpy(&dividend, rem);
+
+    return ret;
+}
+
 int mntMod(s21_decimal dividend, s21_decimal divisor, s21_decimal* res) {
     int ret = 0;
     mntZero(res);
@@ -260,4 +285,39 @@ void printBit(s21_decimal val) {
         printf("%u", isSetBit(val.bits, i));
     }
     printf("\n");
+}
+
+// 0 - OK
+// 1 - переполнение мантиссы
+int mntOverflow(s21_decimal val1, s21_decimal val2) {
+    int ret = 0;
+    s21_decimal max = {0xffffffff, 0xffffffff, 0xffffffff, 0x00000000};
+
+    mntSub(max, val1, &val1);
+    if (mnt_comp(val1, val2) == 2) {
+        ret = 1;
+    }
+
+    return ret;
+}
+
+// 0 - OK
+// 1 - бесконечность
+int equalInf(s21_decimal val1, s21_decimal val2) {
+    int ret = 0;
+    if (!val1.pat.sgn && !val1.pat.sgn && (!val1.pat.exp || !val2.pat.exp)) {
+        ret = mntOverflow(val1, val2) ? 1 : 0;
+    }
+
+    return ret;
+}
+
+int equalMinf(s21_decimal val1, s21_decimal val2) {
+    int ret = 0;
+
+    if (val1.pat.sgn && val1.pat.sgn && (!val1.pat.exp || !val2.pat.exp)) {
+        ret = mntOverflow(val1, val2) ? 1 : 0;
+    }
+
+    return ret;
 }

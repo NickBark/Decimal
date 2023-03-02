@@ -1,7 +1,7 @@
 CC= gcc
 CFLAGS=-g -Werror -Wextra -std=c11
 SOURSES= s21_decimal.c test.c main.c arithmetic.c support.c compare.c
-OBJECTS=$(SOURSES:.cpp=.o)
+OBJECTS=$(SOURSES:.c=.o)
 TEST_FLAGS=-lcheck $(shell pkg-config --cflags --libs check)
 LIB=s21_decimal.a
 
@@ -13,6 +13,7 @@ all: clean $(LIB)
 
 $(LIB): arithmetic.o support.o compare.o
 	ar rc $(LIB) arithmetic.o support.o compare.o
+	ranlib $(LIB)
 	rm *.o
 
 debug: $(LIB) main.o
@@ -32,7 +33,7 @@ gcov_report: add_coverage_flag test
 	genhtml -o report/ test.info --rc lcov_branch_coverage=1
 	open ./report/index.html
 
-.cpp.o:
+.c.o:
 	$(CC) -c $(CFLAGS) $< -o $@ 
 
 clean:

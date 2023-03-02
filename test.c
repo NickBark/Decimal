@@ -4,34 +4,108 @@
 #include "s21_decimal.h"
 
 START_TEST(is_less) {
-    s21_decimal ppp1 = {{12, 11, 10, 0b10110000000000011000000000000000}};
-    s21_decimal ppp2 = {{11, 11, 10, 0b00110000000000011000000000000000}};
+    s21_decimal ppp1 = {{12, 11, 10, 0x00000000}};
+    s21_decimal ppp2 = {{11, 11, 10, 0x80000000}};
+    ppp1.pat.exp = 7;
+    ppp2.pat.exp = 7;
+
+    ck_assert_int_eq(s21_is_less(ppp1, ppp2), 0);
+
+    ppp1.bits[0] = 12;
+    ppp1.bits[1] = 11;
+    ppp1.bits[2] = 10;
+    ppp1.bits[3] = 0x80000000;
+    ppp1.pat.exp = 7;
+
+    ppp2.bits[0] = 11;
+    ppp2.bits[1] = 11;
+    ppp2.bits[2] = 10;
+    ppp2.bits[3] = 0x80000000;
+    ppp2.pat.exp = 7;
 
     ck_assert_int_eq(s21_is_less(ppp1, ppp2), 1);
 
     ppp1.bits[0] = 12;
     ppp1.bits[1] = 11;
     ppp1.bits[2] = 10;
-    ppp1.bits[3] = 0b10110000000000011000000000000000;
+    ppp1.bits[3] = 0x80000000;
+    ppp1.pat.exp = 8;
 
     ppp2.bits[0] = 11;
     ppp2.bits[1] = 11;
     ppp2.bits[2] = 10;
-    ppp2.bits[3] = 0b10110000000000011000000000000000;
+    ppp2.bits[3] = 0x80000000;
+    ppp2.pat.exp = 7;
 
-    ck_assert_int_eq(s21_is_less(ppp1, ppp2), 1);
+    ck_assert_int_eq(s21_is_less(ppp1, ppp2), 0);
+}
+END_TEST
 
-    ppp1.bits[0] = 12;
-    ppp1.bits[1] = 11;
-    ppp1.bits[2] = 10;
-    ppp1.bits[3] = 0b00110000100000010000000000000000;
+START_TEST(add1) {
+    s21_decimal ppp1 = {{12, 11, 10, 0x00000000}};
+    s21_decimal ppp2 = {{11, 11, 10, 0x00000000}};
+    ppp1.pat.exp = 7;
+    ppp2.pat.exp = 7;
+    s21_decimal res = {{3, 3, 3, 3}};
+    s21_decimal check = {{23, 22, 20, 0x00000000}};
+    check.pat.exp = 7;
 
-    ppp2.bits[0] = 11;
-    ppp2.bits[1] = 11;
-    ppp2.bits[2] = 10;
-    ppp2.bits[3] = 0b00110000000000011000000000000000;
+    ck_assert_int_eq(s21_add(ppp1, ppp2, &res), 0);
 
-    ck_assert_int_eq(s21_is_less(ppp1, ppp2), 1);
+    for (int i = 0; i < 4; i++) {
+        ck_assert_int_eq(res.bits[i], check.bits[i]);
+    }
+}
+END_TEST
+
+START_TEST(add2) {
+    s21_decimal ppp1 = {{12, 11, 10, 0x00000000}};
+    s21_decimal ppp2 = {{11, 11, 10, 0x80000000}};
+    ppp1.pat.exp = 7;
+    ppp2.pat.exp = 7;
+    s21_decimal res = {{3, 3, 3, 3}};
+    s21_decimal check = {{1, 0, 0, 0x00000000}};
+    check.pat.exp = 7;
+
+    ck_assert_int_eq(s21_add(ppp1, ppp2, &res), 0);
+
+    for (int i = 0; i < 4; i++) {
+        ck_assert_int_eq(res.bits[i], check.bits[i]);
+    }
+}
+END_TEST
+
+START_TEST(add3) {
+    s21_decimal ppp1 = {{12, 11, 10, 0x00000000}};
+    s21_decimal ppp2 = {{11, 11, 10, 0x80000000}};
+    ppp1.pat.exp = 7;
+    ppp2.pat.exp = 7;
+    s21_decimal res = {{3, 3, 3, 3}};
+    s21_decimal check = {{1, 0, 0, 0x00000000}};
+    check.pat.exp = 7;
+
+    ck_assert_int_eq(s21_add(ppp1, ppp2, &res), 0);
+
+    for (int i = 0; i < 4; i++) {
+        ck_assert_int_eq(res.bits[i], check.bits[i]);
+    }
+}
+END_TEST
+
+START_TEST(add4) {
+    s21_decimal ppp1 = {{12, 11, 10, 0x00000000}};
+    s21_decimal ppp2 = {{11, 11, 10, 0x00000000}};
+    ppp1.pat.exp = 3;
+    ppp2.pat.exp = 7;
+    s21_decimal res = {{3, 3, 3, 3}};
+    s21_decimal check = {{120011, 110011, 100010, 0x00000000}};
+    check.pat.exp = 7;
+
+    ck_assert_int_eq(s21_add(ppp1, ppp2, &res), 0);
+
+    for (int i = 0; i < 4; i++) {
+        ck_assert_int_eq(res.bits[i], check.bits[i]);
+    }
 }
 END_TEST
 
@@ -42,6 +116,10 @@ Suite *s21_decimal_suite(void) {
 
     // Добавление теста в группу тестов.
     tcase_add_test(tcase_core, is_less);
+    tcase_add_test(tcase_core, add1);
+    tcase_add_test(tcase_core, add2);
+    tcase_add_test(tcase_core, add3);
+    tcase_add_test(tcase_core, add4);
 
     // Добавление теста в тестовый набор.
     suite_add_tcase(suite, tcase_core);
