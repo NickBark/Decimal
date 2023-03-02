@@ -35,6 +35,8 @@ int s21_add(s21_decimal value_1, s21_decimal value_2, s21_decimal* result) {
 int s21_div(s21_decimal value_1, s21_decimal value_2, s21_decimal* result) {
     int ret = 0;
     int neg = value_1.pat.sgn && value_2.pat.sgn ? 1 : 0;
+    int scale = value_1.pat.exp - value_2.pat.exp;
+
     s21_decimal remainder = {};
     s21_decimal zero = {};
     s21_decimal tmp = {};
@@ -42,19 +44,21 @@ int s21_div(s21_decimal value_1, s21_decimal value_2, s21_decimal* result) {
     s21_zero_exp(result);
     mntZero(result);
 
-    mntMod(value_1, value_2, &remainder);
-    mntDiv(value_1, value_2, result);
+    mntDiv(value_1, value_2, result, &remainder);
+    printf("!\n");
+    printBit(*result);
 
-    result->pat.exp = value_1.pat.exp - value_2.pat.exp;
-
-    while (mnt_comp(remainder, zero) != 0) {
+    while ((mnt_comp(remainder, zero) != 0) && (scale < 28)) {
         multByTen(&remainder);
         multByTen(result);
-        result->pat.exp++;
+        scale++;
+        mntDiv(remainder, value_2, &tmp, &remainder);
+        mntAdd(*result, tmp, result);
 
-        mntDiv(remainder, value_2, &tmp);
+        printf("!\n");
+        printBit(*result);
     }
-
+    result->pat.exp = (unsigned int)scale;
     return ret;
 }
 

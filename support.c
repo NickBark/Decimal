@@ -62,6 +62,7 @@ void normalozation(s21_decimal* val1, s21_decimal* val2) {
 void mntNorm(s21_decimal* val1, s21_decimal* val2) {
     int wrongWay = 0;
     s21_decimal ten = {{10, 0, 0, 0}};
+    s21_decimal rem = {};
 
     while (val1->pat.exp != val2->pat.exp) {
         if (isSetBit(val1->bits, 95) || isSetBit(val1->bits, 94) ||
@@ -74,7 +75,7 @@ void mntNorm(s21_decimal* val1, s21_decimal* val2) {
     }
     if (wrongWay) {
         while (val1->pat.exp != val2->pat.exp) {
-            mntDiv(*val2, ten, val2);
+            mntDiv(*val2, ten, val2, &rem);
             val2->pat.exp--;
         }
     }
@@ -206,17 +207,18 @@ int mntMul(s21_decimal val1, s21_decimal val2, s21_decimal* res) {
     return ret;
 }
 
-int mntDiv(s21_decimal dividend, s21_decimal divisor, s21_decimal* res) {
+int mntDiv(s21_decimal dividend, s21_decimal divisor, s21_decimal* res,
+           s21_decimal* remainder) {
     int ret = 0;
-    s21_decimal remainder = {};
     mntZero(res);
+    mntZero(remainder);
 
     for (int i = 95; i >= 0; i--) {
-        mntShiftLeft(&remainder, 1);
+        mntShiftLeft(remainder, 1);
 
-        remainder.pat.mnt1 |= isSetBit(dividend.bits, i);
-        if (mnt_comp(remainder, divisor) != 2) {
-            mntSub(remainder, divisor, &remainder);
+        remainder->pat.mnt1 |= isSetBit(dividend.bits, i);
+        if (mnt_comp(*remainder, divisor) != 2) {
+            mntSub(*remainder, divisor, remainder);
             setBit(res->bits, i);
         }
     }
