@@ -169,6 +169,8 @@ int mntSub(s21_decimal val1, s21_decimal val2, s21_decimal* res) {
     int ret = 0;
     int whoInv = 0;  // число для инверсии: 1 - val1, 2 - val2;
 
+    mntZero(res);
+
     // выбираем число для инверсии
     whoInv = mnt_comp(val1, val2) == 1 ? 1 : 2;
 
