@@ -7,6 +7,7 @@
 int s21_add(s21_decimal value_1, s21_decimal value_2, s21_decimal* result) {
     int ret = 0;
     int neg = value_1.pat.sgn && value_2.pat.sgn ? 1 : 0;
+    int operation = ADD;
 
     s21_zero_exp(result);
     mntZero(result);
@@ -15,9 +16,9 @@ int s21_add(s21_decimal value_1, s21_decimal value_2, s21_decimal* result) {
     result->pat.exp = value_1.pat.exp;
 
     if (!(value_1.pat.sgn ^ value_2.pat.sgn)) {
-        if (equalInf(value_1, value_2)) {
+        if (equalInf(value_1, value_2, operation)) {
             ret = 1;
-        } else if (equalMinf(value_1, value_2)) {
+        } else if (equalMinf(value_1, value_2, operation)) {
             ret = 2;
         } else {
             mntAdd(value_1, value_2, result);
@@ -54,6 +55,11 @@ int s21_sub(s21_decimal value_1, s21_decimal value_2, s21_decimal* result) {
 
     return ret;
 }
+
+// int s21_mul(s21_decimal value_1, s21_decimal value_2, s21_decimal* result) {
+//     int ret = 0;
+//     if (mntMulOverflow()) return ret;
+// }
 
 int s21_div(s21_decimal value_1, s21_decimal value_2, s21_decimal* result) {
     int ret = 0;

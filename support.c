@@ -129,38 +129,71 @@ void mntCpy(s21_decimal* val1, s21_decimal* val2) {
     }
 }
 
+void mntCpyBig2Std(bigDecimal* val1, s21_decimal* val2) {
+    for (int i = 0; i < 96; i++) {
+        if (isSetBit(val1->bits, i))
+            setBit(val2->bits, i);
+        else
+            resetBit(val2->bits, i);
+    }
+}
+
+void mntCpyStd2Big(s21_decimal* val1, bigDecimal* val2) {
+    for (int i = 0; i < 96; i++) {
+        if (isSetBit(val1->bits, i))
+            setBit(val2->bits, i);
+        else
+            resetBit(val2->bits, i);
+    }
+}
+
 //Возвращаемое значение:
 // 0 - ОК
 // 1 - Число не помещается в мантиссу
 int mntAdd(s21_decimal val1, s21_decimal val2, s21_decimal* res) {
     int ret = 0;
     int addOne = 0;
+    int rank = 192;
+    bigDecimal sum = {};
+    bigDecimal bigVal1 = {};
+    bigDecimal bigVal2 = {};
+    s21_decimal rem = {};
+
+    mntCpyStd2Big(&val1, &bigVal1);
+    mntCpyStd2Big(&val2, &bigVal2);
+
     // обнуляем мантиссу результата
     mntZero(res);
 
     int v1 = 0;
     int v2 = 0;
 
-    for (int i = 0; i < 96; i++) {
-        v1 = isSetBit(val1.bits, i);
-        v2 = isSetBit(val2.bits, i);
+    for (int i = 0; i < rank; i++) {
+        v1 = isSetBit(bigVal1.bits, i);
+        v2 = isSetBit(bigVal2.bits, i);
 
         if (v1 == 0 && v2 == 0 && addOne == 0) {
-            resetBit(res->bits, i);
+            resetBit(sum.bits, i);
             addOne = 0;
         } else if (v1 == 1 && v2 == 1 && addOne == 1) {
             if (i == 95) ret = 1;
-            setBit(res->bits, i);
+            setBit(sum.bits, i);
             addOne = 1;
         } else if ((v1 ^ v2 ^ addOne) == 0) {
             if (i == 95) ret = 1;
-            resetBit(res->bits, i);
+            resetBit(sum.bits, i);
             addOne = 1;
         } else if ((v1 ^ v2 ^ addOne) == 1) {
-            setBit(res->bits, i);
+            setBit(sum.bits, i);
             addOne = 0;
         }
     }
+
+    // Проверка на переполнение
+    while (sum.bits[3] || sum.bits[4] || sum.bits[5]) {
+        mntBigDivByTen(sum, &sum, &rem);
+    }
+    mntCpyBig2Std(&sum, res);
 
     return ret;
 }
@@ -230,6 +263,27 @@ int mntDiv(s21_decimal dividend, s21_decimal divisor, s21_decimal* res,
     return ret;
 }
 
+int mntBigDivByTen(bigDecimal dividend, bigDecimal* res,
+                   s21_decimal* remainder) {
+    s21_decimal ten = {{10, 0, 0, 0}};
+
+    int ret = 0;
+    mntBigZero(res);
+    mntZero(remainder);
+
+    for (int i = 191; i >= 0; i--) {
+        mntShiftLeft(remainder, 1);
+
+        remainder->pat.mnt1 |= isSetBit(dividend.bits, i);
+        if (mnt_comp(*remainder, ten) != 2) {
+            mntSub(*remainder, ten, remainder);
+            setBit(res->bits, i);
+        }
+    }
+
+    return ret;
+}
+
 int mntDiv2(s21_decimal dividend, s21_decimal divisor, s21_decimal* res,
             s21_decimal* rem) {
     s21_decimal tmp = {};
@@ -283,6 +337,10 @@ void mntZero(s21_decimal* res) {
     for (int i = 0; i < 96; i++) resetBit(res->bits, i);
 }
 
+void mntBigZero(bigDecimal* res) {
+    for (int i = 0; i < 192; i++) resetBit(res->bits, i);
+}
+
 void printBit(s21_decimal val) {
     for (int i = 127; i >= 0; i--) {
         if (i == 95 || i == 126 || i == 127) printf(" ");
@@ -291,9 +349,17 @@ void printBit(s21_decimal val) {
     printf("\n");
 }
 
+void printBigBit(bigDecimal val) {
+    for (int i = 223; i >= 0; i--) {
+        if (i == 191 || i == 222 || i == 223) printf(" ");
+        printf("%u", isSetBit(val.bits, i));
+    }
+    printf("\n");
+}
+
 // 0 - OK
 // 1 - переполнение мантиссы
-int mntOverflow(s21_decimal val1, s21_decimal val2) {
+int mntAddOverflow(s21_decimal val1, s21_decimal val2) {
     int ret = 0;
     s21_decimal max = {0xffffffff, 0xffffffff, 0xffffffff, 0x00000000};
 
@@ -305,22 +371,43 @@ int mntOverflow(s21_decimal val1, s21_decimal val2) {
     return ret;
 }
 
-// 0 - OK
-// 1 - бесконечность
-int equalInf(s21_decimal val1, s21_decimal val2) {
+int mntMulOverflow(s21_decimal val1, s21_decimal val2) {
     int ret = 0;
-    if (!val1.pat.sgn && !val1.pat.sgn && (!val1.pat.exp || !val2.pat.exp)) {
-        ret = mntOverflow(val1, val2) ? 1 : 0;
+    s21_decimal max = {0xffffffff, 0xffffffff, 0xffffffff, 0x00000000};
+    s21_decimal zero = {};  // для сравнения с нулем и заглушки остатка
+
+    if (mnt_comp(val1, zero) && mnt_comp(val1, zero)) {
+        mntDiv(max, val1, &max, &zero);
+        if (mnt_comp(max, val2) == 2) {
+            ret = 1;
+        }
     }
 
     return ret;
 }
 
-int equalMinf(s21_decimal val1, s21_decimal val2) {
+// 0 - OK
+// 1 - бесконечность
+int equalInf(s21_decimal val1, s21_decimal val2, int operation) {
+    int ret = 0;
+    if (!val1.pat.sgn && !val1.pat.sgn && (!val1.pat.exp || !val2.pat.exp)) {
+        if (operation == ADD)
+            ret = mntAddOverflow(val1, val2) ? 1 : 0;
+        else if (operation == MUL)
+            ret = mntMulOverflow(val1, val2) ? 1 : 0;
+    }
+
+    return ret;
+}
+
+int equalMinf(s21_decimal val1, s21_decimal val2, int operation) {
     int ret = 0;
 
     if (val1.pat.sgn && val1.pat.sgn && (!val1.pat.exp || !val2.pat.exp)) {
-        ret = mntOverflow(val1, val2) ? 1 : 0;
+        if (operation == ADD)
+            ret = mntAddOverflow(val1, val2) ? 1 : 0;
+        else if (operation == MUL)
+            ret = mntMulOverflow(val1, val2) ? 1 : 0;
     }
 
     return ret;
